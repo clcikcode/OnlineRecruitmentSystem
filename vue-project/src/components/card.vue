@@ -15,7 +15,7 @@
                 <img :src="imageSrc" />
                 <div class="card-company-name">{{ companyName }}</div>
             </div>
-            <div class="industry">{{ jobType }} | {{ financing }}</div>
+            <div class="industry">{{ classficationName }} | {{ financing }}</div>
         </div>
     </div>
 </template>
@@ -41,7 +41,7 @@ export default {
         imageSrc: {
             type: String,
         },
-        jobType: {
+        classificationName: {
             type: String,
         },
         companyName: {
@@ -63,7 +63,7 @@ export default {
     border-radius: 10px;
     background-color: #fff;
     width: 370px;
-    height: 120px;
+    height: 130px;
     margin-right: 20px;
     margin-top: 20px;
     cursor: pointer;
@@ -107,15 +107,16 @@ export default {
 .card-company-info {
     background: linear-gradient(to right, #f5fcfc, #fcfbfa);
     display: flex;
-    margin-top: 10px;
     justify-content: space-between;
     font-size: 14px;
     color: #333;
     width: 368px;
-    height: 33px;
+    height: 40px;
     margin-left: -10px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+    position: relative;
+    top: 20px;
 }
 
 .card-company-name {
@@ -125,11 +126,13 @@ export default {
 .industry {
     color: #999;
     margin-right: 20px;
+    margin-top: 10px;
 }
 
 .company-img-name {
     display: flex;
     flex-direction: row;
+    margin-top: 10px;
 }
 
 .company-img-name img {

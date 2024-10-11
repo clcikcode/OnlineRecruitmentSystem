@@ -1,8 +1,8 @@
 <template>
     <div class="content">
-        <div v-for="(tab, index) in tabs" :key="index" :class="['tab-item', { active: selectedTab === tab }]"
-            @click="selectTab(tab)">
-            {{ tab }}
+        <div v-for="(tab, index) in tabs" :key="index" :class="['tab-item', { active: selectedTab === tab.tabId }]"
+            @click="selectTab(tab.tabId)">
+            {{ tab.tabName }}
         </div>
     </div>
 </template>
@@ -14,24 +14,47 @@ export default {
     data() {
         return {
             tabs: [
-                '互联网',
-                '产品',
-                '客服/运营',
-                '销售',
-                '人力/行政/法务',
-                '教育培训',
-                '设计',
-                '生产/制造',
-                '酒店/旅游'
+                {
+                  tabName:  '互联网',
+                  tabId: 1 
+                },
+                {
+                  tabName:  '产品',
+                  tabId: 3
+                },
+                {
+                  tabName:  '客服/运营',
+                  tabId: 4
+                },
+                {
+                  tabName:  '人力/行政/法务',
+                  tabId: 6
+                },
+                {
+                  tabName: '教育培训',
+                  tabId: 12
+                },
+                {
+                  tabName:  '设计',
+                  tabId: 13 
+                },
+                {
+                  tabName: '生产/制造',
+                  tabId: 8 
+                },
+                {
+                  tabName: '酒店/旅游',
+                  tabId: 11 
+                },
             ],
-            selectedTab: '互联网', // 默认选中第一个
+            selectedTab: 1, // 默认选中第一个
             HotJobsList: []
         };
     },
     methods: {
-        selectTab(tab) {
-            this.selectedTab = tab;
-            getHotJobs(tab).then(res => {
+        selectTab(tabId) {
+            this.selectedTab = tabId;
+            getHotJobs(tabId).then(res => {
                 this.HotJobsList = res.data.data;
                 console.log(this.HotJobsList);
                 this.$emit('getData', this.HotJobsList); // 使用 Vue 事件传递数据

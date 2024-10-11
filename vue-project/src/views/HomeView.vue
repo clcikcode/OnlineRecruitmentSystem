@@ -14,20 +14,33 @@
         <div class="promo">
             <div class="jobselect">
                 <div class="hover-element" v-for="(item, index) in PageList" :key="index">
-                    <JobSelect :title="item.classificationName" :jobType="item.jobsTypeList"
-                        @mouseenter="handleMouseEnter(item.classificationName)" @mouseleave="handleMouseLeave">
+                    <JobSelect :title="item.classificationName" :jobType="item.jobNames"
+                        @mouseenter="handleMouseEnter(item.id)" @mouseleave="handleMouseLeave">
                     </JobSelect>
                 </div>
                 <div class="pagination">
                     <el-pagination size="small" background layout="prev, pager, next" :total="25" class="mt-4"
-                        default-page-size="7" />
+                        :page-size="7" @prev-click="prev" @next-click="next" @current-change="handleCurrentChange" />
                 </div>
 
             </div>
 
             <div class="popup" v-if="popupShow" @mouseenter="PopupControl" @mouseleave="PopupCancel">
                 <div class="kong"></div>
-                <div class="popup-content"></div>
+                <div class="popup-content">
+                    <div class="title">
+                        <span>{{ classificationName }}</span>
+                    </div>
+                    <div class="jobs" v-for="(item, index) in classificationJobList" :key="index">
+                        <div class="jobs-title">
+                            <span>{{ item.jobsType }}</span>
+                        </div>
+                        <div class="job-content">
+                            <span v-for="(item1,index1) in item.jobNames" :key="index1">{{ item1.jobName }}</span>
+                        </div>   
+                    </div>
+
+                </div>
             </div>
             <div class="promo-banners">
                 <img :src="item.imgUrl" v-for="(item, index) in bannerList" :key="index" />
@@ -42,7 +55,7 @@
             <Tab @getData="getHotJobsData"></Tab>
             <div class="job-card">
                 <Card v-if="show" v-for="(item, index) in HotJobsList" :key="index" :jobname="item.jobName"
-                    :jobType="item.jobType" :salary="item.salary" :educationalRequirements="item.educationalRequirements"
+                    :classificationName="item.classificationName" :salary="item.salary" :educationalRequirements="item.educationalRequirements"
                     :location="item.companyCity" :companyName="item.companyName" :jobWanted="item.jobWanted"
                     :workExperience="item.workExperience" :imageSrc="item.companyLogo" :financing="item.financing"> </Card>
             </div>
@@ -76,6 +89,7 @@ import SearchInput from '../components/searchInput.vue';
 import Card from '../components/card.vue';
 import CompanyCard from '@/components/companyCard.vue';
 import { getCarousel } from '../utils/apis';
+import { getJobByClassification } from '../utils/apis';
 export default {
     components: {
         Tab,
@@ -97,7 +111,10 @@ export default {
             imgsrc: "",
             jobselectShow: false,
             isMouseOverJobSelect: false,
-            isMouseOverPopup: false
+            isMouseOverPopup: false,
+            page: 1,
+            classificationJobList: [],
+            classificationName:""
         };
     },
     created() {
@@ -107,8 +124,8 @@ export default {
             // console.log(res);
             this.PageList = res.data.data;
         });
-        getHotJobs("互联网").then(res => {
-            // console.log(res);
+        getHotJobs(1).then(res => {
+            console.log(res);
             this.HotJobsList = res.data.data;
         });
         getHotJobsRank(10).then(res => {
@@ -127,9 +144,14 @@ export default {
             this.updatePopupShow();
 
         },
-        handleMouseEnter(classificationName) {
+        handleMouseEnter(id) {
             this.isMouseOverJobSelect = true;
             this.updatePopupShow();
+            getJobByClassification(id).then(res => {
+                // console.log(res);
+                this.classificationJobList = res.data.data;
+                this.classificationName = res.data.data[0].classificationName;
+            });
         },
         getJobselect(e) {
             const page = {
@@ -164,6 +186,26 @@ export default {
         },
         updatePopupShow() {
             this.popupShow = this.isMouseOverJobSelect || this.isMouseOverPopup;
+        },
+        prev() {
+            this.page--;
+            if (this.page < 1) {
+                this.page = 1;
+            }
+            getClassification(7, this.page).then(res => {
+                this.PageList = res.data.data;
+            });
+        },
+        next() {
+            this.page++;
+            getClassification(7, this.page).then(res => {
+                this.PageList = res.data.data;
+            });
+        },
+        handleCurrentChange(val) {
+            getClassification(7, val).then(res => {
+                this.PageList = res.data.data;
+            });
         }
     }
 };
@@ -347,11 +389,55 @@ export default {
 }
 
 .popup-content {
-
+    display: flex;
+    flex-direction: column;
     width: 700px;
     height: 400px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
+
+.mt-4 {
+    position: absolute;
+    top: 10px;
+
+}
+.jobs{
+    display: flex;
+    flex-direction: row;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+.title{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.jobs-title{
+    font-size: 13px;
+    flex-wrap: nowrap;
+    width: 16%;
+}
+
+.job-content{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 20px;
+    font-size: 13px;
+    gap: 20px;
+    width: 84%;
+    cursor: pointer;
+}
+
+.job-content span:hover{
+    color: #00A6A7;
+}
+
+
 </style>  

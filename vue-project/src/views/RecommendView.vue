@@ -262,7 +262,7 @@ export default {
     height: 100px;
     justify-content: center;
     padding-top: 30px;
-
+    gap: 20px;
 }
 
 .recommend-info-title-button button {
@@ -281,6 +281,7 @@ export default {
 .recommend-info-title-button button:hover {
     background-color: #00bfa5;
     color: white;
+  
 }
 
 .job-describe {

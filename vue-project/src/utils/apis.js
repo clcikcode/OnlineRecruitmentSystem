@@ -43,12 +43,12 @@ export function getClassification(pageSize, pageNum) {
 }
 
 //获取热招职位
-export function getHotJobs(jobType) {
+export function getHotJobs(ClassificationId) {
     return service({
         url: '/jobs/gethotJobs',
         method: 'GET',
         params: {
-            jobType: jobType,
+            ClassificationId: ClassificationId,
         },
     });
 }
@@ -76,6 +76,14 @@ export function login(data) {
 export function getCarousel() {
     return service({
         url: '/banner/getBanner',
+        method: 'GET',
+    });
+}
+
+//获取分类职位
+export function getJobByClassification(classificationId) {
+    return service({
+        url: '/jobs/getJobsTypebyClassificationId?classificationId=' + classificationId,
         method: 'GET',
     });
 }

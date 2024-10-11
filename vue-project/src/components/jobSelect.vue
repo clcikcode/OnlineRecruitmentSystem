@@ -3,7 +3,7 @@
         <div class="category">
             <span class="category-title">{{ title }}</span>
             <div class="sub-categories">
-                <span class="sub-category" v-for="(item, index) in jobType" :key="index">{{ item.jobsType }}</span>
+                <span class="sub-category" v-for="(item, index) in jobType" :key="index">{{ item.jobName }}</span>
             </div>
         </div>
     </div>
@@ -45,8 +45,7 @@ export default {
 }
 
 .category-title {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
     margin-right: 20px;
 }
 
