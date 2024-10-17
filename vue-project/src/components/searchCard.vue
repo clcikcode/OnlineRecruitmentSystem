@@ -45,10 +45,11 @@ export default {
 <style scoped>
 .search-card {
     padding: 10px;
-    border: 1px solid #e0e0e0;
+    /* border: 1px solid #e0e0e0; */
     border-radius: 10px;
     background-color: white;
     width: 800px;
+    height: 140px;
     margin-top: 30px;
 }
 
@@ -64,7 +65,7 @@ export default {
 
 .job-title {
     font-size: 18px;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .job-title:hover {
@@ -75,7 +76,7 @@ export default {
 .job-info {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .job-info span {
@@ -99,7 +100,7 @@ export default {
 
 .company {
     display: flex;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     flex-direction: row;
 }
 

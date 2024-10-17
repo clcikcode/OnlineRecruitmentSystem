@@ -1,19 +1,22 @@
 <template>
     <div class="content1">
         <div class="card-title">
-            <span class="title">新店 急聘采耳按摩师无责15k 包食宿可小白</span>
-            <span class="salary">15-30k</span>
+            <span class="title">{{ jobTabs.jobName }}</span>
+            <span class="salary">{{ jobTabs.salary }}</span>
         </div>
-        <div class="tabs">
-            <span v-for="(item, index) in tabList" :key="index">{{ item }}</span>
+        <div class="tabs-area">
+            <div class="tabs"  v-for="(item, index) in tabs" :key="index">
+                <span>{{ item }}</span>
+            </div>
         </div>
+
         <div class="company-info">
             <div class="company-user">
-                <img alt="company-user" />
-                <span>而信道</span>
+                <img :src="jobTabs.company.logoUrl" />
+                <span>{{ jobTabs.company.name }}</span>
             </div>
             <div class="company-location">
-                <span>泉州石狮市步行街</span>
+                <span>{{ companyAddress }}</span>
             </div>
         </div>
     </div>
@@ -21,10 +24,33 @@
 <script>
 export default {
     name: "recommend-card",
+    props: {
+        jobTabs: {
+            type: Object,
+            required: true,
+        },
+    },
     data() {
         return {
-            tabList: ['经验不限', '学历不限', '无需足浴', '无销售性'],
+            tabList: [],
         };
+    },
+    computed: {
+        companyAddress() {
+            if (this.jobTabs.company.county !== null) {
+                return this.jobTabs.company.city + '·' + this.jobTabs.company.county;
+            }
+            else {
+                return this.jobTabs.company.city;
+            }
+        },
+        tabs() {
+            this.tabList.push(this.jobTabs.workExperience);
+            this.tabList.push(this.jobTabs.educationalRequirements);
+            this.tabList.push(this.jobTabs.jobTabs.split(',')[0]);
+            this.tabList.push(this.jobTabs.jobTabs.split(',')[1]);
+            return this.tabList;
+        },
     },
 };
 </script>
@@ -33,7 +59,7 @@ export default {
     display: flex;
     flex-direction: column;
     width: 350px;
-    height: 130px;
+    height: 140px;
     border-radius: 10px;
     background-color: white;
     margin-top: 20px;
@@ -52,7 +78,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 10px;
 }
@@ -66,30 +92,41 @@ export default {
 }
 
 .salary {
-    font-size: 20px;
+    font-size: 18px;
     color: #ff4d4f;
     margin-right: 10px;
 }
-
-.tabs {
+.tabs-area{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    gap: 10px;
+    margin-left: 30px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
+.tabs {
+
+    background-color: #F8F8F8;
+    padding: 2px 2px 2px 2px;
+    border-radius: 5px;
+}
+
+
 .tabs span {
-    background-color: #ededed;
-    color: #747474;
+    color: #666666;
     font-size: 13px;
-    width: 60px;
-    padding-left: 5px;
 }
 
 .company-info {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 30px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 50px;
+    background: linear-gradient(to right, #f5fcfc, #fcfbfa);
 }
 
 .company-user {

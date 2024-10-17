@@ -50,6 +50,10 @@ export default {
   border: none;
 }
 
+.search-input:focus {
+  outline: none;
+}
+
 .search-btn {
   padding: 10px 20px;
   background-color: #00bebd;

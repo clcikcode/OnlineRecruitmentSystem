@@ -28,16 +28,16 @@ export default {
                     salary: "95-100元/时",
                     location: "泉州·丰泽区"
                 },
-                {
-                    title: "药店营业员",
-                    salary: "3-4K",
-                    location: "泉州·南安市"
-                },
-                {
-                    title: "出差专员",
-                    salary: "4-9K",
-                    location: "泉州·丰泽区"
-                }
+                // {
+                //     title: "药店营业员",
+                //     salary: "3-4K",
+                //     location: "泉州·南安市"
+                // },
+                // {
+                //     title: "出差专员",
+                //     salary: "4-9K",
+                //     location: "泉州·丰泽区"
+                // }
             ]
         };
     }
@@ -49,7 +49,7 @@ export default {
     width: 300px;
     background-color: #fff;
     border-radius: 10px;
-    height: 350px;
+    height: 395px;
     margin-top: 20px;
     margin-left: 10px;
 }
@@ -90,6 +90,7 @@ export default {
 .ul {
     list-style: none;
     padding-left: 0;
-    margin-right: 30px;
+    /* margin-right: 30px; */
+    cursor: pointer;
 }
 </style>

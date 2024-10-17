@@ -1,39 +1,58 @@
 <template>
-    <div class="container">
+    <div class="container" @scroll="handleScroll">
         <!-- 顶部导航栏 -->
         <!-- <navbar id="1"></navbar> -->
 
         <div class="selection">
             <div class="jobtype-select">
-                <uni-data-select v-model="item.jobtype" :localdata="item.jobTypes" :label="item.label"
-                    v-for="(item, index) in jobSelect" :key="index" :clear="false">
-                </uni-data-select>
+                <el-select v-model="value" :placeholder="item1.filterName" v-for="(item1, index) in jobSelect" :key="index">
+                    <el-option v-for="item in item1.conditionName" :key="item.value" :label="item.text" :value="item.value">
+                    </el-option>
+                </el-select>
             </div>
         </div>
 
         <div class="recommend">
-            <scroll-view class="recommend-card" :scroll-y="true">
-                <RecommendCard v-for="(item, index) in jobSelect" :key="index"
+            <div class="recommend-card">
+                <RecommendCard v-for="(item, index) in RecommendJobsData" :key="index" :jobTabs="item"
                     :class="['recommend-card-item', { active: selectedTab === index }]" @click="select(index)">
                 </RecommendCard>
-            </scroll-view>
+            </div>
 
-            <div class="recommend-info">
+
+            <div class="recommend-info" v-if="recommmendInfoShow">
                 <div class="recommend-info-title">
                     <div class="recommend-info-title-text">
                         <div class="recommend-info-title-text-titleSalary">
-                            <span class="infotitle">新店 急聘采耳按摩师无责15k 包食宿可小白</span>
-                            <span class="salary">15-30k</span>
+                            <span class="infotitle">{{ recommendJobsInfo.jobName }}</span>
+                            <span class="salary">{{ recommendJobsInfo.salary }}</span>
                         </div>
                         <div class="recommend-info-title-text-introduce">
-                            <span>泉州</span>
-                            <span>经验不限</span>
-                            <span>学历不限</span>
+                            <div>
+                                <el-icon :size="16">
+                                    <LocationInformation />
+                                </el-icon>
+                                <span>{{ recommendJobsInfo.company.city }}</span>
+                            </div>
+                            <div>
+                                <el-icon :size="16">
+                                    <OfficeBuilding />
+                                </el-icon>
+                                <span>{{ recommendJobsInfo.workExperience }}</span>
+                            </div>
+
+                            <div>
+                                <el-icon :size="16">
+                                    <School />
+                                </el-icon>
+                                <span>{{ recommendJobsInfo.educationalRequirements }}</span>
+                            </div>
+
                         </div>
                     </div>
                     <div class="recommend-info-title-button">
                         <button>感兴趣</button>
-                        <button>立即沟通</button>
+                        <button @click="TochatPAge">立即沟通</button>
                     </div>
                 </div>
 
@@ -48,18 +67,23 @@
                     </div>
 
                     <div class="job-describe-content">
-                        <span>日结</span>
+                        <span>{{ recommendJobsInfo.jobDescription }}</span>
                     </div>
                     <div class="job-describe-user">
-                        <img alt="user-avatar" />
-                        <span>王永光</span>
+                        <img :src="recommendJobsInfo.user.imgUrl" />
+                        <div class="job-describe-user-name">
+                            <span>{{ recommendJobsInfo.user.uname }}</span>
+                            <span class="job-describe-user-company">{{ recommendJobsInfo.company.name }} · {{
+                                recommendJobsInfo.user.bossTitle }}</span>
+                        </div>
+
                     </div>
                     <div class="job-describe-location">
                         <div class="job-describe-title">
                             <span>工作地址:</span>
                         </div>
                         <div class="job-describe-location-text">
-                            <span>泉州鲤城区泉州鑫成就供应链管理有限公司南环路1016号2层整层</span>
+                            <span>{{ recommendJobsInfo.company.address }}</span>
                         </div>
                     </div>
                 </div>
@@ -71,41 +95,92 @@
 import recommmendCard from '../components/recommendCard.vue';
 import navbarVue from '../components/navbar.vue';
 import RecommendCard from '../components/recommendCard.vue';
+import { getConditions } from '../utils/apis';
+import { getRecommendJobs } from '../utils/apis';
+import { addChatRecord } from '../utils/apis';
 
 export default {
     data() {
         return {
             jobtype: Number(),
-            jobSelect: [
-                {
-                    jobtype: 0,
-                    jobTypes: [
-                        { value: 0, text: "不限" },
-                        { value: 1, text: "全职" },
-                        { value: 2, text: "兼职" },
-                    ],
-                    label: '求职类型',
-                },
-                {
-                    jobtype: 0,
-                    jobTypes: [
-                        { value: 0, text: "不限" },
-                        { value: 1, text: "3k以下" },
-                        { value: 2, text: "3-5k" },
-                        { value: 3, text: "5-10k" },
-                    ],
-                    label: '薪资待遇',
-                },
-                // 其他选择配置...
-            ],
-            jobTabs: ['一对一私教', '团课', '普拉提', '接受兼职'],
+            jobSelect: [],
+            jobTabs: [],
             selectedTab: 0,
+            RecommendJobsData: [],
+            recommendJobsInfo: {},
+            value: '',
+            recommmendInfoShow: false
         };
+    },
+    created() {
+        this.getConditionsData();
+        this.getRecommendJobsData();
+    },
+    mounted() {
+        // 监听窗口的滚动事件
+        window.addEventListener("scroll", this.handleScroll);
+    },
+    beforeDestroy() {
+        // 移除滚动事件监听
+        window.removeEventListener("scroll", this.handleScroll);
     },
     methods: {
         select(index) {
             this.selectedTab = index;
+            this.recommendJobsInfo = this.RecommendJobsData[index];
+            this.jobTabs = this.recommendJobsInfo.jobTabs.split(',');
+            console.log(this.recommendJobsInfo);
         },
+        getConditionsData() {
+            getConditions().then(res => {
+                // console.log(res);
+                this.jobSelect = res.data.data;
+            });
+        },
+        // 滚动事件的处理函数
+        handleScroll() {
+            // 检查页面是否滚动到底部
+            const bottomOfWindow = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
+            if (bottomOfWindow) {
+                // console.log("到底了");
+            }
+        },
+        getRecommendJobsData() {
+            getRecommendJobs(10).then(res => {
+                // console.log(res);
+                this.recommmendInfoShow = true;
+                this.RecommendJobsData = res.data.data;
+                this.recommendJobsInfo = this.RecommendJobsData[0];
+                this.jobTabs = this.recommendJobsInfo.jobTabs.split(',');
+            });
+        },
+        TochatPAge() {
+            //获取今天的日期
+            // let date = new Date();
+            // let year = date.getFullYear();
+            // let month = date.getMonth() + 1;
+            // let day = date.getDate();
+            // let today = year + '-' + month + '-' + day;
+            addChatRecord(this.recommendJobsInfo.id, this.recommendJobsInfo.user.uid);
+            setTimeout(() => {
+                this.$router.push({
+                    path: '/chat',
+                    // query: {
+                    //     receiverId: this.recommendJobsInfo.user.uid,
+                    //     receiverName: this.recommendJobsInfo.user.uname,
+                    //     receiverImg: this.recommendJobsInfo.user.imgUrl,
+                    //     jobId: this.recommendJobsInfo.id,
+                    //     jobName: this.recommendJobsInfo.jobName,
+                    //     salary: this.recommendJobsInfo.salary,
+                    //     city: this.recommendJobsInfo.company.city,
+                    //     companyName: this.recommendJobsInfo.company.name,
+                    //     BossTitle: this.recommendJobsInfo.user.bossTitle,
+                    //     today: today
+                    // }
+                });
+            }, 500);
+
+        }
     },
     components: { RecommendCard }
 };
@@ -113,10 +188,12 @@ export default {
 <style>
 .container {
     width: 100%;
-    height: 100vh;
+    height: 1700px;
     margin: 0 auto;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, #DFF1F4, #F2F4F7);
+    background: linear-gradient(to bottom, #DFF1F4, #EEF7F9);
+    overflow-y: scroll;
+    z-index: 0;
 }
 
 .navbar {
@@ -127,7 +204,7 @@ export default {
     background-color: #202329;
     color: white;
     top: 0;
-    z-index: 1000;
+    z-index: 10;
     position: sticky;
 }
 
@@ -170,7 +247,9 @@ export default {
     width: 100%;
     height: 50px;
     background-color: white;
-
+    position: fixed;
+    top: 70px;
+    z-index: 10;
     padding-left: 360px;
     border: red 1px solid;
 }
@@ -181,6 +260,8 @@ export default {
     margin-right: 10px;
     display: flex;
     flex-direction: row;
+
+    gap: 30px;
 }
 
 .recommend {
@@ -192,6 +273,9 @@ export default {
 .recommend-card {
     display: flex;
     flex-direction: column;
+    position: absolute;
+    left: 250px;
+    top: 120px;
     height: 87vh;
     width: 360px;
 }
@@ -199,13 +283,17 @@ export default {
 .recommend-info {
     width: 800px;
     height: 700px;
-
+    position: fixed;
+    left: 600px;
+    top: 120px;
     margin-top: 20px;
     margin-left: 20px;
     background-color: #fff;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
 .recommend-info-title {
@@ -225,8 +313,6 @@ export default {
     display: flex;
     flex-direction: row;
     width: 500px;
-
-
     justify-content: space-between;
 }
 
@@ -243,16 +329,15 @@ export default {
 }
 
 .recommend-info-title-text-introduce {
-    width: 200px;
+    width: 250px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-top: 20px;
 }
 
-.recommend-info-title-text-introduce text {
-    font-size: 13px;
-    color: #747474;
+.recommend-info-title-text-introduce span {
+    font-size: 15px;
 }
 
 .recommend-info-title-button {
@@ -271,7 +356,7 @@ export default {
     font-size: 14px;
     background-color: transparent;
     color: #00bfa5;
-    border: 2px solid #00bfa5;
+    border: 1px solid #00bfa5;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
@@ -281,7 +366,7 @@ export default {
 .recommend-info-title-button button:hover {
     background-color: #00bfa5;
     color: white;
-  
+
 }
 
 .job-describe {
@@ -290,27 +375,27 @@ export default {
     margin-left: 20px;
 }
 
-.job-describe-title text {
-    font-size: 14px;
+.job-describe-title span {
+    font-size: 18px;
     font-weight: bold;
 }
 
 .job-describe-tab {
     display: flex;
     flex-direction: row;
-    width: 500px;
+    width: 700px;
     margin-top: 20px;
 }
 
 .job-describe-tab-area {
-    background-color: #EDEDED;
+    background-color: #F8F8F8;
     padding: 2px 5px 5px 5px;
     border-radius: 5px;
     margin-right: 10px;
 }
 
-.job-describe-tab-area text {
-    color: #747474;
+.job-describe-tab-area span {
+    color: #666666;
     font-size: 13px;
 }
 
@@ -323,8 +408,10 @@ export default {
 
 }
 
-.job-describe-content text {
+.job-describe-content span {
     font-size: 14px;
+    white-space: pre-wrap;
+
 }
 
 .job-describe-user {
@@ -336,7 +423,7 @@ export default {
     margin-left: 20px;
 }
 
-.job-describe-user image {
+.job-describe-user img {
     width: 50px;
     height: 50px;
     border-radius: 30px;
@@ -345,14 +432,10 @@ export default {
 
 }
 
-.job-describe-user text {
-    margin-top: 20px;
-    margin-left: 10px;
-}
 
 .job-describe-location {
     margin-top: 20px;
-    margin-left: 20px;
+
 }
 
 .job-describe-location-text {
@@ -366,5 +449,18 @@ export default {
 
 .recommend-card-item.active {
     border: #03B1B0 1px solid;
+}
+
+.job-describe-user-name {
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.job-describe-user-company {
+    font-size: 13px;
+    color: #747474;
 }
 </style> 

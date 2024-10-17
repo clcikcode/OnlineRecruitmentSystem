@@ -69,7 +69,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   min-height: 0;
   width: 1700px;
   overflow-x: hidden;

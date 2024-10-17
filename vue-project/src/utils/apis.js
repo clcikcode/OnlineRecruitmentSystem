@@ -66,7 +66,7 @@ export function login(data) {
         url: '/user/login',
         method: 'post',
         data: {
-            uname: data.uname,
+            phoneNumber: data.uname,
             password: data.password,
         },
     });
@@ -85,5 +85,187 @@ export function getJobByClassification(classificationId) {
     return service({
         url: '/jobs/getJobsTypebyClassificationId?classificationId=' + classificationId,
         method: 'GET',
+    });
+}
+
+//获取推荐职位
+export function getRecommendJobs(TopN) {
+    return service({
+        url: '/jobs/getRecommendJobs',
+        method: 'GET',
+        params: {
+            TopN: TopN,
+        },
+    });
+}
+
+//获取用户信息
+export function getUserInfo() {
+    return service({
+        url: '/user/getPersonalInfo',
+        method: 'GET',
+    });
+}
+
+//获取个人优势
+export function getPersonalAdvantage() {
+    return service({
+        url: '/user/getPersonalStrengths',
+        method: 'GET',
+    });
+}
+
+//获取期望职位
+export function getExpectJobs() {
+    return service({
+        url: '/user/getjobWanted',
+        method: 'GET',
+    });
+}
+
+//获取工作经历
+export function getWorkExperience() {
+    return service({
+        url: '/user/getWorkExperience',
+        method: 'GET',
+    });
+}
+
+//获取项目经验
+export function getProjectExperience() {
+    return service({
+        url: '/user/getProjectExperience',
+        method: 'GET',
+    });
+}
+
+//获取教育经历
+export function getEducationExperience() {
+    return service({
+        url: '/user/getEducation',
+        method: 'GET',
+    });
+}
+
+//添加期望职位
+export function addExpectJobs(data) {
+    return service({
+        url: '/user/addExceptionJob',
+        method: 'POST',
+        data: data,
+    });
+}
+
+//添加工作经历
+export function addWorkExperience(data) {
+    return service({
+        url: '/user/addWorkExperience',
+        method: 'POST',
+        data: data,
+    });
+}
+
+//添加项目经验
+export function addProjectExperience(data) {
+    return service({
+        url: '/user/addProjectExperience',
+        method: 'POST',
+        data: data,
+    });
+}
+
+//添加教育经历
+export function addEducationExperience(data) {
+    return service({
+        url: '/user/addeducation',
+        method: 'POST',
+        data: data,
+    });
+}
+
+//编辑个人优势
+export function editPersonalAdvantage(data) {
+    return service({
+        url: '/user/editPersonalStrengths',
+        method: 'POST',
+        data: data,
+    });
+}
+
+//编辑个人信息
+export function editUserInfo(data) {
+    return service({
+        url: '/user/editPersonalInfo',
+        method: 'POST',
+        data: data,
+    });
+}
+
+//删除期望职位
+export function deleteExpectJobs() {
+    return service({
+        url: '/user/deleteJobWanted',
+        method: 'POST',
+    });
+}
+
+//删除工作经历
+export function deleteWorkExperience(data) {
+    return service({
+        url: '/user/deleteWorkExperience',
+        method: 'DELETE',
+        params:{
+            id:data
+        }
+    });
+}
+
+//删除项目经验
+export function deleteProjectExperience(data) {
+    return service({
+        url: '/user/deleteProjectExperience',
+        method: 'DELETE',
+        params:{
+            id:data
+        }
+    });
+}
+
+//删除教育经历
+export function deleteEducationExperience() {
+    return service({
+        url: '/user/deleteEducation',
+        method: 'DELETE',
+    });
+}
+
+//添加聊天记录
+export function addChatRecord(jobId,receiverId) {
+    return service({
+        url: '/chatList/add',
+        method: 'POST',
+        params:{
+            jobId:jobId,
+            receiverId:receiverId
+        }
+    });
+}
+
+//获取聊天列表
+export function getChatList() {
+    return service({
+        url: '/chatList/getChatList',
+        method: 'GET',
+    });
+}
+
+//获取聊天记录
+export function getChatRecord(receiverId) {
+    return service({
+        url: '/chatList/getChatMessageList',
+        method: 'GET',
+        params:{
+            receiverId:receiverId
+        }
     });
 }

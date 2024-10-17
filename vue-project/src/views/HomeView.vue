@@ -55,7 +55,7 @@
             <Tab @getData="getHotJobsData"></Tab>
             <div class="job-card">
                 <Card v-if="show" v-for="(item, index) in HotJobsList" :key="index" :jobname="item.jobName"
-                    :classificationName="item.classificationName" :salary="item.salary" :educationalRequirements="item.educationalRequirements"
+                    :classficationName="item.classficationName" :salary="item.salary" :educationalRequirements="item.educationalRequirements"
                     :location="item.companyCity" :companyName="item.companyName" :jobWanted="item.jobWanted"
                     :workExperience="item.workExperience" :imageSrc="item.companyLogo" :financing="item.financing"> </Card>
             </div>
@@ -128,7 +128,7 @@ export default {
             console.log(res);
             this.HotJobsList = res.data.data;
         });
-        getHotJobsRank(10).then(res => {
+        getHotJobsRank(7).then(res => {
             this.TophotJobs = res.data.data;
             console.log(this.TophotJobs);
         });
@@ -151,6 +151,7 @@ export default {
                 // console.log(res);
                 this.classificationJobList = res.data.data;
                 this.classificationName = res.data.data[0].classificationName;
+                console.log(this.classificationJobList);
             });
         },
         getJobselect(e) {

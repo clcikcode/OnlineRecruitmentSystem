@@ -41,7 +41,7 @@ export default {
         imageSrc: {
             type: String,
         },
-        classificationName: {
+        classficationName: {
             type: String,
         },
         companyName: {
@@ -52,7 +52,7 @@ export default {
         },
         financing: {
             type: String,
-        },
+        }
     },
 };
 </script>
@@ -70,7 +70,7 @@ export default {
 }
 
 .card:hover {
-    box-shadow: 10px 10px 5px #e9ecf0;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -120,7 +120,12 @@ export default {
 }
 
 .card-company-name {
-    font-weight: bold;
+    /* font-weight: 1000; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+
 }
 
 .industry {

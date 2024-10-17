@@ -4,7 +4,8 @@ export default {
   // namespaced: true,
   state: {
     isConnected: false, // WebSocket 连接状态
-    message: '' // 收到的消息
+    message: '', // 收到的消息
+    wsInstance: null      // 保存 WebSocket 实例
   },
   mutations: {
     // 更新 WebSocket 连接状态
@@ -20,7 +21,12 @@ export default {
     // 更新收到的消息
     SET_MESSAGE(state, message) {
       state.message = message;
-    }
+    },
+
+    // 保存 WebSocket 实例
+    SET_WS_INSTANCE(state, ws) {
+      state.wsInstance = ws;
+    },
   },
   actions: {
     // 初始化WebSocket连接 (在登录后调用)
@@ -31,6 +37,9 @@ export default {
       if (shouldReconnect) {
         const senderId = localStorage.getItem('senderId');
         const ws = new WebSocket(`ws://localhost:8080/ws?senderId=${senderId}`);
+
+        // 保存 WebSocket 实例
+        commit('SET_WS_INSTANCE', ws);
 
         // 监听 WebSocket 打开事件
         ws.onopen = () => {
@@ -58,6 +67,16 @@ export default {
           commit('SET_CONNECTED', false);
           dispatch('reconnect'); // 出现错误后重连
         };
+      }
+    },
+
+    // 发送消息
+    sendMessage({ state }, message) {
+      if (state.wsInstance && state.isConnected) {
+        state.wsInstance.send(message);
+        console.log('消息已发送:', message);
+      } else {
+        console.error('WebSocket 未连接，无法发送消息');
       }
     },
 

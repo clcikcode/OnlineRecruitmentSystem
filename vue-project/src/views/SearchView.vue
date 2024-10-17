@@ -15,6 +15,11 @@
             <div class="searchcard">
                 <div class="card-area">
                     <SearchCard></SearchCard>
+                    <SearchCard></SearchCard>
+                    <SearchCard></SearchCard>
+                    <SearchCard></SearchCard>
+                    <SearchCard></SearchCard>
+                    <SearchCard></SearchCard>
                 </div>
                <HistoryCard></HistoryCard>
             </div>

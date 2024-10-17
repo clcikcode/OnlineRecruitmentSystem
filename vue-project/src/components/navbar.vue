@@ -13,8 +13,8 @@
 		</div>
 		<div class="afterLogin" v-else>
 			<div class="userMsg">
-				<span>消息</span>
-				<span>简历</span>
+				<span @click="toChatPage">消息</span>
+				<span @click="toResumePage">简历</span>
 			</div>
 			<div class="userImg" @mouseenter="userinfoShow" @mouseleave="userinfoClose">
 				<span>{{ afterLogin.uname }}</span>
@@ -23,7 +23,7 @@
 			<Transition name="slide">
 				<div class="userinfo" v-show="show" :style="userinfoStyle" @mouseenter="userinfoShow"
 					@mouseleave="userinfoClose">
-					<div class="userinfo-button">
+					<div class="userinfo-button" @click="ToPersonalPage">
 						<span>个人中心</span>
 					</div>
 					<div class="userinfo-button">
@@ -114,6 +114,15 @@ export default {
 			this.closeWebSocket();
 			this.$router.push({ path: '/login' });
 
+		},
+		toChatPage(){
+			this.$router.push({ path: '/chat' });
+		},
+		toResumePage(){
+			this.$router.push({ path: '/resume' });
+		},
+		ToPersonalPage(){
+			this.$router.push({ path: '/personal' });
 		}
 	}
 }
@@ -254,6 +263,8 @@ export default {
 	cursor: pointer;
 	color: #222222;
 	font-size: 14px;
+	position: absolute;
+	z-index: 1000;
 }
 
 .userinfo span:hover {
